@@ -1,0 +1,13 @@
+CREATE DATABASE ptbot;
+// CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'platon';
+\c ptbot;
+
+CREATE TABLE emails (
+Email_id SERIAL PRIMARY KEY,
+Email VARCHAR(255)
+);
+
+CREATE TABLE phone_numbers (
+Number_id SERIAL PRIMARY KEY,
+Number VARCHAR(30)
+);

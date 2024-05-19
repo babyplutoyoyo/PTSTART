@@ -1,0 +1,71 @@
+version: '2'
+
+services:
+  db:
+    container_name: db
+    build: ./db
+    image: db_image
+    user: root
+    restart: always
+    ports:
+      - '5454:5432'
+    volumes:
+      - ./db/pgdata:/bitnami/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=${DB_REPL_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${DB_REPL_PASSWORD}
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_DATABASE=${DB_DATABASE}
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+
+  db_repl:
+    container_name: db_repl
+    build: ./db_repl
+    image: db_repl_image
+    user: root
+    ports:
+      - '5455:5432'
+    depends_on:
+      - db
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_MASTER_HOST=${DB_HOST}
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=${DB_REPL_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${DB_REPL_PASSWORD}
+      - POSTGRESQL_MASTER_PORT_NUMBER=${DB_PORT}
+ 
+  bot:
+    container_name: bot
+    build: ./bot
+    image: bot_image
+    ports:
+      - "3030:3030"
+    environment:
+      - TOKEN=${TOKEN}
+      - HOST=${RM_HOST}
+      - PORT=${RM_PORT}
+      - USER=${RM_USER}
+      - PASSWORD=${RM_PASSWORD}
+      - USERDB=${DB_USER}
+      - PASSWORDDB=${DB_PASSWORD}
+      - HOSTDB=${DB_HOST}
+      - PORTDB=${DB_PORT}
+      - DATABASE=${DB_DATABASE}
+    depends_on:
+      - db
+      - db_repl
+    volumes:
+      - ./db/pgdata:/bitnami/postgresql
+
+volumes:
+  db_data:
+    driver: local
