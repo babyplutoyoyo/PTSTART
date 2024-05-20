@@ -1,0 +1,2 @@
+2024-05-20 19:23:42.830 GMT [1] LOG:  ending log output to stderr
+2024-05-20 19:23:42.830 GMT [1] HINT:  Future log output will go to log destination "csvlog".

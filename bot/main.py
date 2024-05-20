@@ -14,7 +14,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 HOST = os.getenv("RM_HOST")
 HOSTDB = os.getenv("DB_HOST")
-PORT = int(os.getenv("RM_PORT"))
+PORT = os.getenv("RM_PORT")
 NAME = os.getenv("RM_USER")
 PASSWORD = os.getenv("RM_PASSWORD")
 DB_USER = os.getenv("DB_USER")
@@ -118,10 +118,10 @@ def confirm_email_addresses(update: Update, context: CallbackContext):
 
 
 
-
 def find_numbers(text):
-    phone_regex = re.compile(r'(\+?\d{1}\s*[-\.\(]?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{2}[-\.\s]?\d{2}|\d{1}\s*[-\.\(]?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{2}[-\.\s]?\d{2}|\+?\d{1}\s*[-\.\(]?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{2}[-\.\s]?\d{2}|\d{1}\s*[-\.\(]?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{2}[-\.\s]?\d{2}|\d{1}\s*[-\.\(]?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{2}[-\.\s]?\d{2})')
+    phone_regex = re.compile(r'(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}')
     return phone_regex.findall(text)
+
 
 def find_emails(text):
     email_regex = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
