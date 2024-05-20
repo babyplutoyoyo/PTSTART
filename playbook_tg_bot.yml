@@ -233,17 +233,33 @@
         name: postgresql
         state: started
 
-- name: bot Playbook
+
+- name: Bot Playbook
   hosts: bot_master
   become: yes
+
   tasks:
     - name: Installing Python packages
-      pip:                
+      pip:
         name:
           - python-telegram-bot==13.7
           - paramiko
           - psycopg2-binary
           - python-dotenv
+      become: yes
+
+    - name: Replace log directory path in main.py
+      replace:
+        path: "{{ myhosts.vars.WORKDIR }}/bot/main.py"
+        regexp: '/bitnami/postgresql/data/log/'
+        replace: '/var/log/postgresql/'
+      become: yes
+
+    - name: Replace log file extension in main.py
+      replace:
+        path: "{{ myhosts.vars.WORKDIR }}/bot/main.py"
+        regexp: '\.csv'
+        replace: '.log'
       become: yes
 
     - name: Run Bot
